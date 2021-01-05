@@ -24,6 +24,7 @@ class App extends Component {
   }
 
   onChange = (editorState) => {
+    console.log(JSON.stringify(this.state.editorState));
     this.setState({ editorState });
   };
 
@@ -31,7 +32,6 @@ class App extends Component {
   //   this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
   //   setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
   // }
-
 
   //accepts input as = ["hello","how","are","you"]
   addBulletList = (input) => {
@@ -46,7 +46,7 @@ class App extends Component {
     this.setState({
       editorState: EditorState.createWithContent(ContentState.createFromBlockArray(contentBlocksArray))
     }, () => {
-      this.focusManually()
+      this.moveSelectionToEnd()
     });
   }
 
@@ -63,7 +63,7 @@ class App extends Component {
     this.setState({
       editorState: EditorState.createWithContent(ContentState.createFromBlockArray(contentBlocksArray))
     }, () => {
-      this.focusManually()
+      this.moveSelectionToEnd()
     });
   }
 
@@ -93,7 +93,7 @@ class App extends Component {
     const newEditorState = EditorState.createWithContent(newContentState);
 
     this.setState({ editorState: newEditorState }, () => {
-      this.focusManually()
+      this.moveSelectionToEnd()
     });
   }
 
@@ -136,16 +136,19 @@ class App extends Component {
     document.activeElement.blur();
   }
 
+  moveSelectionToEnd = () => {
+    this.setState({
+      editorState: EditorState.moveSelectionToEnd(this.state.editorState),
+    });
+  }
+
   focusManually = () => {
     this.editorRef.current.focus()
-    this.setState({
-      editorState: EditorState.moveFocusToEnd(this.state.editorState),
-    });
   }
 
   render() {
     return (
-      <div style={{ margin: 10 }}>
+      <div style={{ marginLeft: 10, marginRight: 10 }}>
         <Editor
           ref={this.editorRef}
           editorState={this.state.editorState}

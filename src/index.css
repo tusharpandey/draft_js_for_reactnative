@@ -6,16 +6,20 @@ body {
 }
 
 div.DraftEditor-root {
-    background-color: white;
+    background-color: #ffffff;
     height: 100vh;
     overflow-y: auto;
-}
-
-div.DraftEditor-editorContainer,div.public-DraftEditor-content {
-    height: 100%;
+    -webkit-user-select: text;
 }
 
 .public-DraftEditorPlaceholder-root{
     position: absolute
 }
 
+div.DraftEditor-editorContainer {
+    height: 100vh;
+} 
+
+div.public-DraftEditor-content{
+    height: 1000vh;
+}
