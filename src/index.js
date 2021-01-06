@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import {
   Editor, EditorState, RichUtils,
   CharacterMetadata, ContentBlock,
-  genKey, ContentState, convertFromHTML, Modifier, SelectionState
+  genKey, ContentState, convertFromHTML, convertToRaw, SelectionState
 } from 'draft-js';
 import './index.css';
 import { Repeat, List } from 'immutable';
+import { stateToHTML } from 'draft-js-export-html';
 
 class App extends Component {
 
@@ -25,13 +26,34 @@ class App extends Component {
 
   onChange = (editorState) => {
     console.log(JSON.stringify(this.state.editorState));
-    this.setState({ editorState });
+    this.setState({ editorState }, () => {
+      this.getText()
+    });
   };
 
   // componentDidMount() {
-  //   this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
-  //   setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
+  //   // this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
+  //   // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
+  //   setTimeout(() => {
+  //     this.toggleBulletPoints()
+  //   }, 2000)
   // }
+
+  getText = () => {
+    const editorState = this.state.editorState;
+    let html = stateToHTML(editorState.getCurrentContent());
+    window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'GET_TEXT', text: html }));
+  }
+
+  setHtml = (html) => {
+    const blocksFromHTML = convertFromHTML(html)
+    const content = ContentState.createFromBlockArray(blocksFromHTML)
+    this.setState({
+      editorState: EditorState.createWithContent(content)
+    }, () => {
+      this.moveSelectionToEnd()
+    })
+  }
 
   //accepts input as = ["hello","how","are","you"]
   addBulletList = (input) => {
@@ -132,6 +154,10 @@ class App extends Component {
     window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'unordered-list-item' }));
   }
 
+  handlePastedText = () => {
+    window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'handlePastedText' }));
+  }
+
   onBlur = () => {
     document.activeElement.blur();
   }
@@ -146,7 +172,19 @@ class App extends Component {
     this.editorRef.current.focus()
   }
 
+  shouldHidePlaceholder = () => {
+    const contentState = this.state.editorState.getCurrentContent();
+    return (
+      contentState.hasText() ||
+      contentState
+        .getBlockMap()
+        .first()
+        .getType() !== 'unstyled'
+    );
+  }
+
   render() {
+    this.shouldHidePlaceholder()
     return (
       <div style={{ marginLeft: 10, marginRight: 10 }}>
         <Editor
@@ -154,7 +192,8 @@ class App extends Component {
           editorState={this.state.editorState}
           handleKeyCommand={this.handleKeyCommand}
           onChange={this.onChange}
-          placeholder={this.state.placeholder}
+          handlePastedText={() => { this.handlePastedText() }}
+          placeholder={this.shouldHidePlaceholder() ? undefined : this.state.placeholder}
         />
       </div >
     )
