@@ -31,13 +31,13 @@ class App extends Component {
     });
   };
 
-  componentDidMount() {
-    this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
-    // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
-    // setTimeout(() => {
-    //   this.toggleBulletPoints()
-    // }, 2000)
-  }
+  // componentDidMount() {
+  // this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
+  // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
+  // setTimeout(() => {
+  //   this.toggleBulletPoints()
+  // }, 2000)
+  // }
 
   getText = () => {
 
@@ -200,7 +200,7 @@ class App extends Component {
   render() {
     this.shouldHidePlaceholder()
     return (
-      <div style={{ marginLeft: 10, marginRight: 10 }}>
+      <div style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8 }}>
         <Editor
           ref={this.editorRef}
           editorState={this.state.editorState}

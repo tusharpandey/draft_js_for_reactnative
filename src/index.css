@@ -13,7 +13,13 @@ div.DraftEditor-root {
 }
 
 .public-DraftEditorPlaceholder-root{
-    position: absolute
+    position: absolute;
+    color: #999999;
+    font-family: Nunito;
+    font-size: 14px;
+    /* font-weight: bold; */
+    letter-spacing: 0;
+    line-height: 16px;
 }
 
 div.DraftEditor-editorContainer {
