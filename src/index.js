@@ -31,18 +31,32 @@ class App extends Component {
     });
   };
 
-  // componentDidMount() {
-  //   // this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
-  //   // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
-  //   setTimeout(() => {
-  //     this.toggleBulletPoints()
-  //   }, 2000)
-  // }
+  componentDidMount() {
+    this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
+    // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
+    // setTimeout(() => {
+    //   this.toggleBulletPoints()
+    // }, 2000)
+  }
 
   getText = () => {
-    const editorState = this.state.editorState;
+
+    const { editorState } = this.state;
+    const inlineStyle = editorState.getCurrentInlineStyle();
+
+    const selectionState = editorState.getSelection();
+    const key = selectionState.getAnchorKey();
+
+    let blockType = editorState.getCurrentContent().getBlockForKey(key).getType()
     let html = stateToHTML(editorState.getCurrentContent());
-    window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'GET_TEXT', text: html }));
+
+    window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({
+      action: 'GET_TEXT',
+      text: html,
+      editorState: editorState,
+      inlineStyle: inlineStyle,
+      blockType: blockType
+    }));
   }
 
   setHtml = (html) => {
