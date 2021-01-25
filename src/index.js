@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import {
   Editor, EditorState, RichUtils,
   CharacterMetadata, ContentBlock,
-  genKey, ContentState, convertFromHTML, convertToRaw, SelectionState
+  genKey, ContentState,
 } from 'draft-js';
 import './index.css';
 import { Repeat, List } from 'immutable';
-import { stateToHTML } from 'draft-js-export-html';
+import { convertToHTML, convertFromHTML } from 'draft-convert';
+// import { stateToHTML } from 'draft-js-export-html';
 
 class App extends Component {
 
@@ -25,9 +26,19 @@ class App extends Component {
   }
 
   onChange = (editorState) => {
-    console.log(JSON.stringify(this.state.editorState));
+    let contentState = editorState.getCurrentContent()
+
+    let text = convertToHTML(contentState)
+    let inlineStyle = editorState.getCurrentInlineStyle()
+    let blockType = contentState.getBlockForKey(editorState.getSelection().getAnchorKey()).getType()
+
     this.setState({ editorState }, () => {
-      this.getText()
+      window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({
+        action: 'GET_TEXT',
+        text: text,
+        inlineStyle: inlineStyle,
+        blockType: blockType
+      }));
     });
   };
 
@@ -39,16 +50,15 @@ class App extends Component {
   // }, 2000)
   // }
 
-  getText = () => {
+  getText(editorState) {
 
-    const { editorState } = this.state;
     const inlineStyle = editorState.getCurrentInlineStyle();
 
     const selectionState = editorState.getSelection();
     const key = selectionState.getAnchorKey();
 
     let blockType = editorState.getCurrentContent().getBlockForKey(key).getType()
-    let html = stateToHTML(editorState.getCurrentContent());
+    let html = convertToHTML(editorState.getCurrentContent());
 
     window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({
       action: 'GET_TEXT',
@@ -61,9 +71,9 @@ class App extends Component {
 
   setHtml = (html) => {
     const blocksFromHTML = convertFromHTML(html)
-    const content = ContentState.createFromBlockArray(blocksFromHTML)
+    // const content = ContentState.createFromBlockArray(blocksFromHTML)
     this.setState({
-      editorState: EditorState.createWithContent(content)
+      editorState: EditorState.createWithContent(blocksFromHTML)
     }, () => {
       this.moveSelectionToEnd()
     })
