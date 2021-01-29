@@ -6,7 +6,7 @@ body {
 }
 
 div.DraftEditor-root {
-    background-color: #ffffff;
+    background-color: white;
     height: 100vh;
     overflow-y: auto;
     -webkit-user-select: text;
@@ -23,9 +23,13 @@ div.DraftEditor-root {
 }
 
 div.DraftEditor-editorContainer {
-    height: 100vh;
+    /* height: 100vh; */
+    /* background-color:green; */
 } 
 
 div.public-DraftEditor-content{
-    height: 1000vh;
+    /* height: 100vh; */
+    min-height: 150px;
+    /* background-color: hotpink; */
 }
+

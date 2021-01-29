@@ -45,9 +45,9 @@ class App extends Component {
   // componentDidMount() {
   // this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
   // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
-  // setTimeout(() => {
-  //   this.toggleBulletPoints()
-  // }, 2000)
+  //   setTimeout(() => {
+  //     this.toggleBulletPoints()
+  //   }, 2000)
   // }
 
   getText(editorState) {
@@ -184,6 +184,11 @@ class App extends Component {
 
   onBlur = () => {
     document.activeElement.blur();
+    window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'onBlur' }));
+  }
+
+  onFocus = () => {
+    window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'onFocus', isEmpty: this.shouldHidePlaceholder() }));
   }
 
   moveSelectionToEnd = () => {
@@ -208,18 +213,21 @@ class App extends Component {
   }
 
   render() {
-    this.shouldHidePlaceholder()
     return (
-      <div style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 8, paddingBottom: 8 }}>
-        <Editor
-          ref={this.editorRef}
-          editorState={this.state.editorState}
-          handleKeyCommand={this.handleKeyCommand}
-          onChange={this.onChange}
-          handlePastedText={() => { this.handlePastedText() }}
-          placeholder={this.shouldHidePlaceholder() ? undefined : this.state.placeholder}
-        />
-      </div >
+      <div onClick={this.focusManually}>
+        <div style={{ paddingLeft: 16, paddingRight: 16 }}>
+          <Editor
+            ref={this.editorRef}
+            onBlur={this.onBlur}
+            onFocus={this.onFocus}
+            editorState={this.state.editorState}
+            handleKeyCommand={this.handleKeyCommand}
+            onChange={this.onChange}
+            handlePastedText={() => { this.handlePastedText() }}
+            placeholder={this.shouldHidePlaceholder() ? undefined : this.state.placeholder}
+          />
+        </div >
+      </div>
     )
   }
 }
