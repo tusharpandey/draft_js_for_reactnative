@@ -13,6 +13,7 @@ div.DraftEditor-root {
 }
 
 .public-DraftEditorPlaceholder-root{
+    margin-top: 10px;
     position: absolute;
     color: #999999;
     font-family: Nunito;
@@ -30,6 +31,8 @@ div.DraftEditor-editorContainer {
 div.public-DraftEditor-content{
     /* height: 100vh; */
     min-height: 150px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     /* background-color: hotpink; */
 }
 
