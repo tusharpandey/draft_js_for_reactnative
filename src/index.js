@@ -3,12 +3,11 @@ import ReactDOM from 'react-dom';
 import {
   Editor, EditorState, RichUtils,
   CharacterMetadata, ContentBlock,
-  genKey, ContentState,
+  genKey, ContentState
 } from 'draft-js';
 import './index.css';
 import { Repeat, List } from 'immutable';
 import { convertToHTML, convertFromHTML } from 'draft-convert';
-// import { stateToHTML } from 'draft-js-export-html';
 
 class App extends Component {
 
@@ -26,6 +25,7 @@ class App extends Component {
   }
 
   onChange = (editorState) => {
+    console.log("onChangeCalled");
     let contentState = editorState.getCurrentContent()
 
     let text = convertToHTML(contentState)
@@ -43,12 +43,27 @@ class App extends Component {
   };
 
   // componentDidMount() {
-  // this.addBulletList(["fsdf", "sdfdsfsd", "sdfdsf"])
-  // setTimeout(() => { this.addBullet("<li>hello</li>") }, 4000)
   //   setTimeout(() => {
-  //     this.toggleBulletPoints()
+  //     this.insertTextInNewLine("hello")
+  //     setTimeout(() => {
+  //       this.insertTextInNewLine("<h1>tushar</h1>");
+  //       setTimeout(() => { this.insertTextInNewLine("<h1>kamal</h1>") }, 1000)
+  //     }, 1000)
   //   }, 2000)
   // }
+
+  insertTextInNewLine(text) {
+    this.moveSelectionToEnd()
+    const editorState = this.state.editorState;
+    let currentHTML = convertToHTML(editorState.getCurrentContent());
+    currentHTML = currentHTML + text
+    let contentState = convertFromHTML(currentHTML);
+    let newEditorState = EditorState.createWithContent(contentState)
+
+    this.setState({ editorState: newEditorState }, () => {
+      this.onChange(this.state.editorState)
+    });
+  }
 
   getText(editorState) {
 
