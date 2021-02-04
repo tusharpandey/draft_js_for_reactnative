@@ -3,11 +3,16 @@ import ReactDOM from 'react-dom';
 import {
   Editor, EditorState, RichUtils,
   CharacterMetadata, ContentBlock,
-  genKey, ContentState
+  genKey, ContentState, convertFromHTML
 } from 'draft-js';
 import './index.css';
 import { Repeat, List } from 'immutable';
-import { convertToHTML, convertFromHTML } from 'draft-convert';
+import { convertToHTML } from 'draft-convert';
+import {
+  getContentStateUsingDraftConvertLib,
+  convertFromHTMLUsingDraftConvertLib,
+  convertContentStateToHTMLUsingDraftConvertLib
+} from './helper';
 
 class App extends Component {
 
@@ -28,7 +33,7 @@ class App extends Component {
     console.log("onChangeCalled");
     let contentState = editorState.getCurrentContent()
 
-    let text = convertToHTML(contentState)
+    let text = convertContentStateToHTMLUsingDraftConvertLib(contentState)
     let inlineStyle = editorState.getCurrentInlineStyle()
     let blockType = contentState.getBlockForKey(editorState.getSelection().getAnchorKey()).getType()
 
@@ -43,23 +48,19 @@ class App extends Component {
   };
 
   // componentDidMount() {
+  //   let html = '<p></p><ul><li>Use computers for various applications, such as database management or word processing.</li><li>Perform payroll functions, such as maintaining timekeeping information and processing and submitting payroll.</li><li>Answer telephones and give information to callers, take messages, or transfer calls to appropriate individuals.</li></ul>'
   //   setTimeout(() => {
-  //     this.insertTextInNewLine("hello")
-  //     setTimeout(() => {
-  //       this.insertTextInNewLine("<h1>tushar</h1>");
-  //       setTimeout(() => { this.insertTextInNewLine("<h1>kamal</h1>") }, 1000)
-  //     }, 1000)
+  //     // this.addBullet("<li>hello</li>")
+  //     setTimeout(() => { this.setHtml(html) }, 1000)
   //   }, 2000)
   // }
 
   insertTextInNewLine(text) {
     this.moveSelectionToEnd()
     const editorState = this.state.editorState;
-    let currentHTML = convertToHTML(editorState.getCurrentContent());
-    currentHTML = currentHTML + text
-    let contentState = convertFromHTML(currentHTML);
+    let contentState = getContentStateUsingDraftConvertLib(editorState, text)
     let newEditorState = EditorState.createWithContent(contentState)
-
+    getContentStateUsingDraftConvertLib(editorState, text)
     this.setState({ editorState: newEditorState }, () => {
       this.onChange(this.state.editorState)
     });
@@ -85,7 +86,7 @@ class App extends Component {
   }
 
   setHtml = (html) => {
-    const blocksFromHTML = convertFromHTML(html)
+    const blocksFromHTML = convertFromHTMLUsingDraftConvertLib(html)
     // const content = ContentState.createFromBlockArray(blocksFromHTML)
     this.setState({
       editorState: EditorState.createWithContent(blocksFromHTML)
@@ -130,6 +131,7 @@ class App extends Component {
 
   // accepts input as = "<li>hello</li>"
   addBullet(bulletsHTML) {
+    this.moveSelectionToEnd()
     const editorState = this.state.editorState;
     const newBlockMap = convertFromHTML(bulletsHTML);
     const contentState = editorState.getCurrentContent();
@@ -154,7 +156,7 @@ class App extends Component {
     const newEditorState = EditorState.createWithContent(newContentState);
 
     this.setState({ editorState: newEditorState }, () => {
-      this.moveSelectionToEnd()
+      this.onChange(this.state.editorState)
     });
   }
 
