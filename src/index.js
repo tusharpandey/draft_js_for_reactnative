@@ -25,12 +25,50 @@ class App extends Component {
     }
   }
 
+  scrollToBottom = () => {
+
+    let maxOffSet = 0
+    let elements = document.querySelectorAll('*');
+    let className = ''
+
+    let parent = undefined
+    let container = undefined
+    let child = undefined
+
+    for (let i = 0; i < elements.length; i++) {
+      let item = elements[i]
+      if (item.className === "DraftEditor-root") {
+        parent = item
+      }
+      if (item.className === "public-DraftStyleDefault-ul") {
+        container = item
+      }
+
+      if (item.offsetTop > maxOffSet) {
+        maxOffSet = item.offsetTop
+        className = item.className
+        child = item
+      }
+      // console.log(item.className + " : " + item.offsetTop);
+    }
+    console.log("maxOffSet : " + maxOffSet);
+    console.log(parent.className + " : " + parent.offsetTop);
+    console.log(container.className + " : " + container.offsetTop);
+    console.log(child.className + " : " + child.offsetTop);
+
+    child.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // componentDidMount() {
+  //   setTimeout(() => { this.addBullet("<li>hello</li>") }, 2000)
+  // }
+
   setPlaceHolder = (placeholder) => {
     this.setState({ placeholder: placeholder })
   }
 
   onChange = (editorState) => {
-    console.log("onChangeCalled");
+    // console.log("onChangeCalled");
     let contentState = editorState.getCurrentContent()
 
     let text = convertContentStateToHTMLUsingDraftConvertLib(contentState)
@@ -46,14 +84,6 @@ class App extends Component {
       }));
     });
   };
-
-  // componentDidMount() {
-  //   // let html = '<p></p><ul><li>Use computers for various applications, such as database management or word processing.</li><li>Perform payroll functions, such as maintaining timekeeping information and processing and submitting payroll.</li><li>Answer telephones and give information to callers, take messages, or transfer calls to appropriate individuals.</li></ul>'
-  //   setTimeout(() => {
-  //     this.addBullet("<li>hello bhai</li>")
-  //     setTimeout(() => { this.addBullet("<li>tum hello bhai</li>") }, 1000)
-  //   }, 2000)
-  // }
 
   insertTextInNewLine(text) {
     this.moveSelectionToEnd()
@@ -155,7 +185,7 @@ class App extends Component {
     const newContentState =
       ContentState.createFromBlockArray(newBlockMap, newBlockMap.entityMap);
     const newEditorState = EditorState.createWithContent(newContentState);
-    console.log("newEditorState : " + JSON.stringify(newEditorState));
+    // console.log("newEditorState : " + JSON.stringify(newEditorState));
     this.setState({ editorState: newEditorState }, () => {
       this.onChange(this.state.editorState)
     });
@@ -233,7 +263,8 @@ class App extends Component {
   render() {
     return (
       <div onClick={this.focusManually}>
-        <div style={{ paddingLeft: 16, paddingRight: 16 }}>
+        <div
+          style={{ paddingLeft: 16, paddingRight: 16 }}>
           <Editor
             ref={this.editorRef}
             onBlur={this.onBlur}
