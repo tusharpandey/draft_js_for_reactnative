@@ -40,7 +40,8 @@ class App extends Component {
       if (item.className === "DraftEditor-root") {
         parent = item
       }
-      if (item.className === "public-DraftStyleDefault-ul") {
+      if (item.className === "public-DraftStyleDefault-ul" ||
+        item.className === "DraftEditor-editorContainer") {
         container = item
       }
 
@@ -58,10 +59,6 @@ class App extends Component {
 
     child.scrollIntoView({ behavior: 'smooth' });
   }
-
-  // componentDidMount() {
-  //   setTimeout(() => { this.addBullet("<li>hello</li>") }, 2000)
-  // }
 
   setPlaceHolder = (placeholder) => {
     this.setState({ placeholder: placeholder })
@@ -90,6 +87,7 @@ class App extends Component {
     const editorState = this.state.editorState;
     let contentState = getContentStateUsingDraftConvertLib(editorState, text)
     let newEditorState = EditorState.createWithContent(contentState)
+    console.log("newEditorState : " + JSON.stringify(newEditorState));
     this.setState({ editorState: newEditorState }, () => {
       this.onChange(this.state.editorState)
     });
