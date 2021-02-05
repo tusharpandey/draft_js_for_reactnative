@@ -48,10 +48,10 @@ class App extends Component {
   };
 
   // componentDidMount() {
-  //   let html = '<p></p><ul><li>Use computers for various applications, such as database management or word processing.</li><li>Perform payroll functions, such as maintaining timekeeping information and processing and submitting payroll.</li><li>Answer telephones and give information to callers, take messages, or transfer calls to appropriate individuals.</li></ul>'
+  //   // let html = '<p></p><ul><li>Use computers for various applications, such as database management or word processing.</li><li>Perform payroll functions, such as maintaining timekeeping information and processing and submitting payroll.</li><li>Answer telephones and give information to callers, take messages, or transfer calls to appropriate individuals.</li></ul>'
   //   setTimeout(() => {
-  //     // this.addBullet("<li>hello</li>")
-  //     setTimeout(() => { this.setHtml(html) }, 1000)
+  //     this.addBullet("<li>hello bhai</li>")
+  //     setTimeout(() => { this.addBullet("<li>tum hello bhai</li>") }, 1000)
   //   }, 2000)
   // }
 
@@ -60,7 +60,6 @@ class App extends Component {
     const editorState = this.state.editorState;
     let contentState = getContentStateUsingDraftConvertLib(editorState, text)
     let newEditorState = EditorState.createWithContent(contentState)
-    getContentStateUsingDraftConvertLib(editorState, text)
     this.setState({ editorState: newEditorState }, () => {
       this.onChange(this.state.editorState)
     });
@@ -145,16 +144,18 @@ class App extends Component {
       return k === key;
     }).toArray();
 
+    // contentState.hasText() ?
+
     newBlockMap.contentBlocks =
       blocksBefore
-        .concat([contentState.getBlockForKey(key)])
+        .concat(contentState.hasText() ? [contentState.getBlockForKey(key)] : [])
         .concat(newBlockMap.contentBlocks)
         .concat(blocksAfter);
 
     const newContentState =
       ContentState.createFromBlockArray(newBlockMap, newBlockMap.entityMap);
     const newEditorState = EditorState.createWithContent(newContentState);
-
+    console.log("newEditorState : " + JSON.stringify(newEditorState));
     this.setState({ editorState: newEditorState }, () => {
       this.onChange(this.state.editorState)
     });
