@@ -272,6 +272,7 @@ class App extends Component {
             onChange={this.onChange}
             handlePastedText={() => { this.handlePastedText() }}
             placeholder={this.shouldHidePlaceholder() ? undefined : this.state.placeholder}
+          // placeholder={"Briefly describe the value that you bring through your skills,background and experience"}
           />
         </div >
       </div>

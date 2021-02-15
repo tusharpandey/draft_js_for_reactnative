@@ -5,6 +5,16 @@ body {
   margin: 0;
 }
 
+/* @font-face {
+    font-family: 'NunitoBold';
+    src: local('NunitoBold'), url(./fonts/Nunito-Bold.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'NunitoRegular';
+    src: local('NunitoRegular'), url(./fonts/Nunito-Regular.ttf) format('truetype');
+} */
+
 div.DraftEditor-root {
     background-color: white;
     height: 100vh;
@@ -16,9 +26,8 @@ div.DraftEditor-root {
     margin-top: 10px;
     position: absolute;
     color: #999999;
-    font-family: Nunito;
+    font-family: 'Nunito' , Bold;
     font-size: 14px;
-    /* font-weight: bold; */
     letter-spacing: 0;
     line-height: 16px;
 }
@@ -31,6 +40,9 @@ div.DraftEditor-editorContainer {
 div.public-DraftEditor-content{
     /* height: 100vh; */
     min-height: 150px;
+    /* font-size: 14px; */
+    /* font-size: 40px; */
+    font-family: 'Nunito' , Regular;
     padding-top: 10px;
     padding-bottom: 10px;
     /* background-color: hotpink; */
